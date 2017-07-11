@@ -109,11 +109,10 @@ void HelloWorld::fir_bulletprint() // 맨 처음 총알 생성 코드
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(n, visibleSize.height - 5);
 		location = player->getPosition();
-		float direction = atan2f(
+		bullet->direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
 			) - PI / 2;
-		bullet->direction = direction;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
@@ -122,11 +121,10 @@ void HelloWorld::fir_bulletprint() // 맨 처음 총알 생성 코드
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(n, 5);
 		location = player->getPosition();
-		float direction = atan2f(
+		bullet->direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
-			) - PI / 2;
-		bullet->direction = direction;
+			) - PI / 2;;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
@@ -135,11 +133,10 @@ void HelloWorld::fir_bulletprint() // 맨 처음 총알 생성 코드
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(5, visibleSize.height - n);
 		location = player->getPosition();
-		float direction = atan2f(
+		bullet->direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
-			) - PI / 2;
-		bullet->direction = direction;
+			) - PI / 2;;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
@@ -148,11 +145,10 @@ void HelloWorld::fir_bulletprint() // 맨 처음 총알 생성 코드
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(visibleSize.width - 5, visibleSize.height - n);
 		location = player->getPosition();
-		float direction = atan2f(
+		bullet->direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
-			) - PI / 2;
-		bullet->direction = direction;
+			) - PI / 2;;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
@@ -168,11 +164,10 @@ void HelloWorld::bullet_print() // 총알 생성코드
 	case 4: bullet->setPosition(rand() % 801, -5); break;                  // ↓
 	}
 	location = player->getPosition();
-	float direction = atan2f(
-		location.x - bullet->getPosition().x,
-		bullet->getPosition().y - location.y
-		) - PI / 2;
-	bullet->direction = direction;
+	bullet->direction = atan2f(
+			location.x - bullet->getPosition().x,
+			bullet->getPosition().y - location.y
+			) - PI / 2;;
 	this->addChild(bullet, 1);
 	bullets->push_back(bullet);
 }
@@ -222,11 +217,10 @@ void HelloWorld::Spe_bullet_print() // 특수 총알 생성코드
 	case 4: SBullet->setPosition(rand() % 801, -5); break;                  
 	}
 	location = player->getPosition();
-	float direction = atan2f(
-		location.x - SBullet->getPosition().x,
-		SBullet->getPosition().y - location.y
-		) - PI / 2;
-	SBullet->direction = direction;
+	SBullet->direction = atan2f(
+			location.x - bullet->getPosition().x,
+			bullet->getPosition().y - location.y
+			) - PI / 2;;
 	this->addChild(SBullet, 1);
 	Spe_bullets->push_back(SBullet);
 }
@@ -256,11 +250,10 @@ void HelloWorld::Spe_bullet_pro() // 특수 총알 처리
 			location = player->getPosition();
 			for (jt = Spe_bullets->begin(); jt != Spe_bullets->end(); jt++)
 			{
-				float direction = atan2f(
+				(*jt)->direction = atan2f(
 					location.x - (*jt)->getPosition().x,
 					(*jt)->getPosition().y - location.y
-					) - PI / 2;
-				(*jt)->direction = direction;
+					) - PI / 2;;
 			}
 			spe_follw_time -= 1;
 		}
@@ -284,21 +277,15 @@ void HelloWorld::player_pro(float dt)
 {
 	// 배경 스크롤 이동 구문
 	if (bg1->getPositionY() >= visibleSize.height + (visibleSize.height / 2))
-	{
 		bg1->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
-	}
 	if (bg2->getPositionY() >= visibleSize.height + (visibleSize.height / 2))
-	{
 		bg2->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
-	}
 
 	// 벽 충돌 구문
-	if (
-		(player->getPositionY() < visibleSize.height - player->getContentSize().height / 2) &&
+	if (	(player->getPositionY() < visibleSize.height - player->getContentSize().height / 2) &&
 		(player->getPositionX() > player->getContentSize().width / 2) &&
 		(player->getPositionY() > player->getContentSize().height / 2) &&
-		(player->getPositionX() < visibleSize.width - player->getContentSize().width / 2)
-		)
+		(player->getPositionX() < visibleSize.width - player->getContentSize().width / 2))
 	{
 		player->setPosition(player->getPosition() + (SPEED * userVec2 * dt));
 	}
