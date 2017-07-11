@@ -1,15 +1,3 @@
-// #¹ö±× 1
-// ÇöÀç ¹ö±× ¹ß»ıO ±âÁ¾(°¶·°½ÃS5, LG G3 Cat6) !°¶·°½Ã ³ëÆ®3, °¶·°½ÃS4´Â ¸Å¿ì ½É°¢, ÅÍÄ¡ÇÏÀÚ¸¶ÀÚ gg
-// ¹ö±× ¹ß»ıX ±âÁ¾(°¶·°½ÃS3, °¶·°½ÃA5, °¶·°½Ã ³ëÆ®2, LG G2)
-//
-// ½ºÅ¸Æ® ÈÄ °ğ ¹Ù·Î ÃÑ¾ËÀÌ³ª ÇÃ·¹ÀÌ¾î¸¦ ´©¸£¸é
-// Player°¡ »ç¶óÁö¸ç Result¾ÀÀ¸·Î ³Ñ¾î°¡´Â ¹ö±×°¡ ÀÖ½À´Ï´Ù.
-
-// #¹ö±× 2
-// ÇöÀç ¹ö±× ¹ß»ıO ±âÁ¾(°¶·°½Ã ³ëÆ®2)
-//
-// °ÔÀÓ¾À°ú °á°ú¾ÀÀ» ÀÚÁÖ ¿Ô´Ù°¬´Ù ÇÏ´Ùº¸¸é ÆÃ±èÇö»óÀÌ ÀÖ½À´Ï´Ù.
-
 #include "HelloWorldScene.h"
 
 USING_NS_CC;
@@ -44,13 +32,13 @@ void HelloWorld::update(float dt)
 
 	if (_time >= setTime - valanceTime)
 	{
-		bullet_print(); // ÃÑ¾Ë »ı¼º ÇÔ¼ö
-		_time -= setTime - valanceTime; // ÃÊ±âÈ­
+		bullet_print(); // ì´ì•Œ ìƒì„± í•¨ìˆ˜
+		_time -= setTime - valanceTime; // ì´ˆê¸°í™”
 	}
 	if (special_time >= 4)
 	{
-		Spe_bullet_print(); // Æ¯¼ö ÃÑ¾Ë »ı¼º ÇÔ¼ö
-		special_time -= 4; // ÃÊ±âÈ­
+		Spe_bullet_print(); // íŠ¹ìˆ˜ ì´ì•Œ ìƒì„± í•¨ìˆ˜
+		special_time -= 4; // ì´ˆê¸°í™”
 	}
 	if (P_time > checkTime)
 	{
@@ -58,7 +46,7 @@ void HelloWorld::update(float dt)
 		checkTime += 7;
 	}
 	
-	// ÃÑ¾Ë, ÇÃ·¹ÀÌ¾î Ã³¸® ÇÔ¼ö
+	// ì´ì•Œ, í”Œë ˆì´ì–´ ì²˜ë¦¬ í•¨ìˆ˜
 	bullet_pro();  
 	Spe_bullet_pro();
 	player_pro(dt);
@@ -70,13 +58,13 @@ void HelloWorld::update(float dt)
 }
 void HelloWorld::InitEvent()
 {
-	// Å° ¸®½º³Ê
+	// í‚¤ ë¦¬ìŠ¤ë„ˆ
 	EventListenerKeyboard *keyListener = EventListenerKeyboard::create();
 	keyListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
 	keyListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyListener, this);
 
-	// ÅÍÄ¡ ¸®½º³Ê
+	// í„°ì¹˜ ë¦¬ìŠ¤ë„ˆ
 	EventListenerTouchOneByOne *touchListener = EventListenerTouchOneByOne::create();
 	touchListener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
 	touchListener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
@@ -114,9 +102,9 @@ void HelloWorld::InitData()
 	this->addChild(TIME, 2);
 }
 
-void HelloWorld::fir_bulletprint() // ¸Ç Ã³À½ ÃÑ¾Ë »ı¼º ÄÚµå
+void HelloWorld::fir_bulletprint() // ë§¨ ì²˜ìŒ ì´ì•Œ ìƒì„± ì½”ë“œ
 {
-	for (int i = 0, n = 10; i < 15; i++, n += 70) // ¡è
+	for (int i = 0, n = 10; i < 15; i++, n += 70) // â†‘
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(n, visibleSize.height - 5);
@@ -129,7 +117,7 @@ void HelloWorld::fir_bulletprint() // ¸Ç Ã³À½ ÃÑ¾Ë »ı¼º ÄÚµå
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
-	for (int i = 0, n = 10; i < 15; i++, n += 70) // ¡é
+	for (int i = 0, n = 10; i < 15; i++, n += 70) // â†“
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(n, 5);
@@ -142,7 +130,7 @@ void HelloWorld::fir_bulletprint() // ¸Ç Ã³À½ ÃÑ¾Ë »ı¼º ÄÚµå
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
-	for (int i = 0, n = 50; i < 10; i++, n += 55) // ¡ç
+	for (int i = 0, n = 50; i < 10; i++, n += 55) // â†
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(5, visibleSize.height - n);
@@ -155,7 +143,7 @@ void HelloWorld::fir_bulletprint() // ¸Ç Ã³À½ ÃÑ¾Ë »ı¼º ÄÚµå
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
-	for (int i = 0, n = 50; i < 10; i++, n += 55) // ¡æ
+	for (int i = 0, n = 50; i < 10; i++, n += 55) // â†’
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(visibleSize.width - 5, visibleSize.height - n);
@@ -169,15 +157,15 @@ void HelloWorld::fir_bulletprint() // ¸Ç Ã³À½ ÃÑ¾Ë »ı¼º ÄÚµå
 		bullets->push_back(bullet);
 	}
 }
-void HelloWorld::bullet_print() // ÃÑ¾Ë »ı¼ºÄÚµå
+void HelloWorld::bullet_print() // ì´ì•Œ ìƒì„±ì½”ë“œ
 {
 	Bullet *bullet = Bullet::create();
 	switch (rand() % 4 + 1)
-	{ /*È­¸é ¾È ¿¡ »ı¼ºµÇÁö¾Ê°Ô */
-	case 1: bullet->setPosition(rand() % 801, visibleSize.height + 5); break;   // ¡è
-	case 2: bullet->setPosition(visibleSize.width + 5, rand() % 601); break;   // ¡æ
-	case 3: bullet->setPosition(-5, rand() % 601); break;                   // ¡ç
-	case 4: bullet->setPosition(rand() % 801, -5); break;                  // ¡é
+	{ /*í™”ë©´ ì•ˆ ì— ìƒì„±ë˜ì§€ì•Šê²Œ */
+	case 1: bullet->setPosition(rand() % 801, visibleSize.height + 5); break;   // â†‘
+	case 2: bullet->setPosition(visibleSize.width + 5, rand() % 601); break;   // â†’
+	case 3: bullet->setPosition(-5, rand() % 601); break;                   // â†
+	case 4: bullet->setPosition(rand() % 801, -5); break;                  // â†“
 	}
 	location = player->getPosition();
 	float direction = atan2f(
@@ -188,7 +176,7 @@ void HelloWorld::bullet_print() // ÃÑ¾Ë »ı¼ºÄÚµå
 	this->addChild(bullet, 1);
 	bullets->push_back(bullet);
 }
-void HelloWorld::bullet_pro() // ÃÑ¾Ë Ã³¸®
+void HelloWorld::bullet_pro() // ì´ì•Œ ì²˜ë¦¬
 {
 	std::list<Bullet *>::iterator it;
 
@@ -222,7 +210,7 @@ void HelloWorld::bullet_pro() // ÃÑ¾Ë Ã³¸®
 		}
 	}
 }
-void HelloWorld::Spe_bullet_print() // Æ¯¼ö ÃÑ¾Ë »ı¼ºÄÚµå
+void HelloWorld::Spe_bullet_print() // íŠ¹ìˆ˜ ì´ì•Œ ìƒì„±ì½”ë“œ
 {
 	SpecialBullet *SBullet = SpecialBullet::create();
 
@@ -242,7 +230,7 @@ void HelloWorld::Spe_bullet_print() // Æ¯¼ö ÃÑ¾Ë »ı¼ºÄÚµå
 	this->addChild(SBullet, 1);
 	Spe_bullets->push_back(SBullet);
 }
-void HelloWorld::Spe_bullet_pro() // Æ¯¼ö ÃÑ¾Ë Ã³¸®
+void HelloWorld::Spe_bullet_pro() // íŠ¹ìˆ˜ ì´ì•Œ ì²˜ë¦¬
 {
 	std::list<SpecialBullet *>::iterator it, jt;
 
@@ -294,7 +282,7 @@ void HelloWorld::Spe_bullet_pro() // Æ¯¼ö ÃÑ¾Ë Ã³¸®
 
 void HelloWorld::player_pro(float dt)
 {
-	// ¹è°æ ½ºÅ©·Ñ ÀÌµ¿ ±¸¹®
+	// ë°°ê²½ ìŠ¤í¬ë¡¤ ì´ë™ êµ¬ë¬¸
 	if (bg1->getPositionY() >= visibleSize.height + (visibleSize.height / 2))
 	{
 		bg1->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
@@ -304,7 +292,7 @@ void HelloWorld::player_pro(float dt)
 		bg2->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
 	}
 
-	// º® Ãæµ¹ ±¸¹®
+	// ë²½ ì¶©ëŒ êµ¬ë¬¸
 	if (
 		(player->getPositionY() < visibleSize.height - player->getContentSize().height / 2) &&
 		(player->getPositionX() > player->getContentSize().width / 2) &&
@@ -349,7 +337,7 @@ bool HelloWorld::onTouchBegan(Touch *touch, Event *event)
 }
 void HelloWorld::onTouchMoved(Touch *touch, Event *event)
 {
-	// cb°¡ pb¹ÛÀ¸·Î ³ª°¡Áö ¾Ê°Ô ÇÏ´Â ±¸¹®
+	// cbê°€ pbë°–ìœ¼ë¡œ ë‚˜ê°€ì§€ ì•Šê²Œ í•˜ëŠ” êµ¬ë¬¸
 	//if ((sqrtf(pow((touch->getLocation().x - pb->getPositionX()), 2) +
 	//	      pow((touch->getLocation().y - pb->getPositionY()), 2)) <= pb->getContentSize().width / 2))
 	//{
