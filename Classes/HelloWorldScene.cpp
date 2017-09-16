@@ -1,3 +1,15 @@
+// #¹ö±× 1
+// ÇöÀç ¹ö±× ¹ß»ıO ±âÁ¾(°¶·°½ÃS5, LG G3 Cat6) !°¶·°½Ã ³ëÆ®3, °¶·°½ÃS4´Â ¸Å¿ì ½É°¢, ÅÍÄ¡ÇÏÀÚ¸¶ÀÚ gg
+// ¹ö±× ¹ß»ıX ±âÁ¾(°¶·°½ÃS3, °¶·°½ÃA5, °¶·°½Ã ³ëÆ®2, LG G2)
+//
+// ½ºÅ¸Æ® ÈÄ °ğ ¹Ù·Î ÃÑ¾ËÀÌ³ª ÇÃ·¹ÀÌ¾î¸¦ ´©¸£¸é
+// Player°¡ »ç¶óÁö¸ç Result¾ÀÀ¸·Î ³Ñ¾î°¡´Â ¹ö±×°¡ ÀÖ½À´Ï´Ù.
+
+// #¹ö±× 2
+// ÇöÀç ¹ö±× ¹ß»ıO ±âÁ¾(°¶·°½Ã ³ëÆ®2)
+//
+// °ÔÀÓ¾À°ú °á°ú¾ÀÀ» ÀÚÁÖ ¿Ô´Ù°¬´Ù ÇÏ´Ùº¸¸é ÆÃ±è Çö»óÀÌ ÀÖ½À´Ï´Ù.
+
 #include "HelloWorldScene.h"
 
 USING_NS_CC;
@@ -32,13 +44,13 @@ void HelloWorld::update(float dt)
 
 	if (_time >= setTime - valanceTime)
 	{
-		bullet_print(); // ì´ì•Œ ìƒì„± í•¨ìˆ˜
-		_time -= setTime - valanceTime; // ì´ˆê¸°í™”
+		bullet_print(); // ÃÑ¾Ë »ı¼º ÇÔ¼ö
+		_time -= setTime - valanceTime; // ÃÊ±âÈ­
 	}
 	if (special_time >= 4)
 	{
-		Spe_bullet_print(); // íŠ¹ìˆ˜ ì´ì•Œ ìƒì„± í•¨ìˆ˜
-		special_time -= 4; // ì´ˆê¸°í™”
+		Spe_bullet_print(); // Æ¯¼ö ÃÑ¾Ë »ı¼º ÇÔ¼ö
+		special_time -= 4; // ÃÊ±âÈ­
 	}
 	if (P_time > checkTime)
 	{
@@ -46,25 +58,27 @@ void HelloWorld::update(float dt)
 		checkTime += 7;
 	}
 	
-	// ì´ì•Œ, í”Œë ˆì´ì–´ ì²˜ë¦¬ í•¨ìˆ˜
+	// ÃÑ¾Ë, ÇÃ·¹ÀÌ¾î Ã³¸® ÇÔ¼ö
 	bullet_pro();  
 	Spe_bullet_pro();
-	player_pro(dt);
+	playerAndWall_pro(dt);
+
+	if (isGameOver)
+		return;
 
 	bg1->setPositionY(bg1->getPositionY() + 5);
 	bg2->setPositionY(bg2->getPositionY() + 5);
-
-	TIME->setString("Time: " + toString(P_time));
+	timeLabel->setString("Time: " + MyFunction::toString(P_time));
 }
 void HelloWorld::InitEvent()
 {
-	// í‚¤ ë¦¬ìŠ¤ë„ˆ
+	// Å° ¸®½º³Ê
 	EventListenerKeyboard *keyListener = EventListenerKeyboard::create();
 	keyListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
 	keyListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyListener, this);
 
-	// í„°ì¹˜ ë¦¬ìŠ¤ë„ˆ
+	// ÅÍÄ¡ ¸®½º³Ê
 	EventListenerTouchOneByOne *touchListener = EventListenerTouchOneByOne::create();
 	touchListener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
 	touchListener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
@@ -75,110 +89,121 @@ void HelloWorld::InitData()
 {
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("BGM/Codeko - Crest.wav", true);
 
-	userVec2 = Vec2::ZERO;
-
 	this->setTouchEnabled(true);
 	this->setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 
-	isOnlyOneTouch = true;
+	userVelocity = Vec2::ZERO;
+	isGameOver = false;
+	bullets = new std::list<Bullet *>();
+	Spe_bullets = new std::list<SpecialBullet *>();
+
+	m_joypad.Init("UI/ParentButton.png", "UI/ChildButton.png", this);
 
 	player = Player::create();
 	player->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(player, 1);
 
 	bg1 = Sprite::create("UI/bg1.png");
-	bg2 = Sprite::create("UI/bg2.png");
 	bg1->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	bg2->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
 	this->addChild(bg1, 0);
+	bg2 = Sprite::create("UI/bg2.png");
+	bg2->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
 	this->addChild(bg2, 0);
 
-	bullets = new std::list<Bullet *>();
-	Spe_bullets = new std::list<SpecialBullet *>();
-
-	TIME = LabelTTF::create("", "Arial", 18);
-	TIME->setColor(Color3B::WHITE);
-	TIME->setPosition(visibleSize.width / 2, visibleSize.height - 15);
-	this->addChild(TIME, 2);
+	timeLabel = LabelTTF::create("", "Arial", 18);
+	timeLabel->setColor(Color3B::WHITE);
+	timeLabel->setPosition(visibleSize.width / 2, visibleSize.height - 15);
+	this->addChild(timeLabel, 2);
 }
 
-void HelloWorld::fir_bulletprint() // ë§¨ ì²˜ìŒ ì´ì•Œ ìƒì„± ì½”ë“œ
+void HelloWorld::fir_bulletprint() // ¸Ç Ã³À½ ÃÑ¾Ë »ı¼º ÄÚµå
 {
-	for (int i = 0, n = 10; i < 15; i++, n += 70) // â†‘
+	for (int i = 0, n = 10; i < 15; ++i, n += 70) // ¡è
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(n, visibleSize.height - 5);
 		location = player->getPosition();
-		bullet->direction = atan2f(
+		float direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
 			) - PI / 2;
+		bullet->direction = direction;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
-	for (int i = 0, n = 10; i < 15; i++, n += 70) // â†“
+	for (int i = 0, n = 10; i < 15; ++i, n += 70) // ¡é
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(n, 5);
 		location = player->getPosition();
-		bullet->direction = atan2f(
+		float direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
-			) - PI / 2;;
+			) - PI / 2;
+		bullet->direction = direction;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
-	for (int i = 0, n = 50; i < 10; i++, n += 55) // â†
+	for (int i = 0, n = 50; i < 10; ++i, n += 55) // ¡ç
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(5, visibleSize.height - n);
 		location = player->getPosition();
-		bullet->direction = atan2f(
+		float direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
-			) - PI / 2;;
+			) - PI / 2;
+		bullet->direction = direction;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
-	for (int i = 0, n = 50; i < 10; i++, n += 55) // â†’
+	for (int i = 0, n = 50; i < 10; ++i, n += 55) // ¡æ
 	{
 		Bullet *bullet = Bullet::create();
 		bullet->setPosition(visibleSize.width - 5, visibleSize.height - n);
 		location = player->getPosition();
-		bullet->direction = atan2f(
+		float direction = atan2f(
 			location.x - bullet->getPosition().x,
 			bullet->getPosition().y - location.y
-			) - PI / 2;;
+			) - PI / 2;
+		bullet->direction = direction;
 		this->addChild(bullet);
 		bullets->push_back(bullet);
 	}
 }
-void HelloWorld::bullet_print() // ì´ì•Œ ìƒì„±ì½”ë“œ
+void HelloWorld::bullet_print() // ÃÑ¾Ë »ı¼ºÄÚµå
 {
 	Bullet *bullet = Bullet::create();
 	switch (rand() % 4 + 1)
-	{ /*í™”ë©´ ì•ˆ ì— ìƒì„±ë˜ì§€ì•Šê²Œ */
-	case 1: bullet->setPosition(rand() % 801, visibleSize.height + 5); break;   // â†‘
-	case 2: bullet->setPosition(visibleSize.width + 5, rand() % 601); break;   // â†’
-	case 3: bullet->setPosition(-5, rand() % 601); break;                   // â†
-	case 4: bullet->setPosition(rand() % 801, -5); break;                  // â†“
+	{ /* È­¸é ¾È ¿¡ »ı¼ºµÇÁö¾Ê°Ô */
+	case 1: bullet->setPosition(rand() % 801, visibleSize.height + 5); break;   // ¡è
+	case 2: bullet->setPosition(visibleSize.width + 5, rand() % 601); break;	// ¡æ
+	case 3: bullet->setPosition(-5, rand() % 601); break;						// ¡ç
+	case 4: bullet->setPosition(rand() % 801, -5); break;						// ¡é
 	}
 	location = player->getPosition();
-	bullet->direction = atan2f(
-			location.x - bullet->getPosition().x,
-			bullet->getPosition().y - location.y
-			) - PI / 2;;
+	float direction = atan2f(
+		location.x - bullet->getPosition().x,
+		bullet->getPosition().y - location.y
+		) - PI / 2;
+	bullet->direction = direction;
 	this->addChild(bullet, 1);
 	bullets->push_back(bullet);
 }
-void HelloWorld::bullet_pro() // ì´ì•Œ ì²˜ë¦¬
+void HelloWorld::bullet_pro() // ÃÑ¾Ë Ã³¸®
 {
 	std::list<Bullet *>::iterator it;
 
-	for (it = bullets->begin(); it != bullets->end(); it++)
+	if (isGameOver)
+		return;
+
+	for (it = bullets->begin(); it != bullets->end(); ++it)
 	{
 		if ((*it)->getBoundingBox().intersectsRect(player->getBoundingBox()))
 		{
+			SafeDeletePointers();
+			this->unscheduleUpdate();
+
 			TransitionSlideInT * fade_scene =
 				TransitionSlideInT::create(0.5f, ResultScene::createScene());
 			
@@ -186,11 +211,11 @@ void HelloWorld::bullet_pro() // ì´ì•Œ ì²˜ë¦¬
 			UserDefault::getInstance()->setFloatForKey("P_time", P_time);
 			UserDefault::getInstance()->flush();
 
-			Director::getInstance()->replaceScene(fade_scene); 
-			this->unscheduleUpdate();
+			Director::getInstance()->replaceScene(fade_scene);
 
-			CC_SAFE_DELETE(fade_scene);
 		}
+		if (isGameOver)
+			break; 
 
 		if (!bullets->empty() && 
 			((*it)->getPositionX() < -5 ||
@@ -205,7 +230,7 @@ void HelloWorld::bullet_pro() // ì´ì•Œ ì²˜ë¦¬
 		}
 	}
 }
-void HelloWorld::Spe_bullet_print() // íŠ¹ìˆ˜ ì´ì•Œ ìƒì„±ì½”ë“œ
+void HelloWorld::Spe_bullet_print() // Æ¯¼ö ÃÑ¾Ë »ı¼ºÄÚµå
 {
 	SpecialBullet *SBullet = SpecialBullet::create();
 
@@ -217,21 +242,26 @@ void HelloWorld::Spe_bullet_print() // íŠ¹ìˆ˜ ì´ì•Œ ìƒì„±ì½”ë“œ
 	case 4: SBullet->setPosition(rand() % 801, -5); break;                  
 	}
 	location = player->getPosition();
-	SBullet->direction = atan2f(
-			location.x - bullet->getPosition().x,
-			bullet->getPosition().y - location.y
-			) - PI / 2;;
+	float direction = atan2f(
+		location.x - SBullet->getPosition().x,
+		SBullet->getPosition().y - location.y
+		) - PI / 2;
+	SBullet->direction = direction;
 	this->addChild(SBullet, 1);
 	Spe_bullets->push_back(SBullet);
 }
-void HelloWorld::Spe_bullet_pro() // íŠ¹ìˆ˜ ì´ì•Œ ì²˜ë¦¬
+void HelloWorld::Spe_bullet_pro() // Æ¯¼ö ÃÑ¾Ë Ã³¸®
 {
 	std::list<SpecialBullet *>::iterator it, jt;
 
-	for (it = Spe_bullets->begin(); it != Spe_bullets->end(); it++)
+	if (isGameOver)
+		return;
+
+	for (it = Spe_bullets->begin(); it != Spe_bullets->end(); ++it)
 	{
 		if ((*it)->getBoundingBox().intersectsRect(player->getBoundingBox()))
 		{
+			SafeDeletePointers();
 			this->unscheduleUpdate();
 
 			TransitionSlideInT * fade_scene =
@@ -245,15 +275,19 @@ void HelloWorld::Spe_bullet_pro() // íŠ¹ìˆ˜ ì´ì•Œ ì²˜ë¦¬
 			Director::getInstance()->replaceScene(fade_scene);
 		}
 
+		if (isGameOver)
+			break;
+
 		if (spe_follw_time >= 1)
 		{
 			location = player->getPosition();
-			for (jt = Spe_bullets->begin(); jt != Spe_bullets->end(); jt++)
+			for (jt = Spe_bullets->begin(); jt != Spe_bullets->end(); ++jt)
 			{
-				(*jt)->direction = atan2f(
+				float direction = atan2f(
 					location.x - (*jt)->getPosition().x,
 					(*jt)->getPosition().y - location.y
-					) - PI / 2;;
+					) - PI / 2;
+				(*jt)->direction = direction;
 			}
 			spe_follw_time -= 1;
 		}
@@ -273,21 +307,25 @@ void HelloWorld::Spe_bullet_pro() // íŠ¹ìˆ˜ ì´ì•Œ ì²˜ë¦¬
 	}
 }
 
-void HelloWorld::player_pro(float dt)
+void HelloWorld::playerAndWall_pro(float dt)
 {
-	// ë°°ê²½ ìŠ¤í¬ë¡¤ ì´ë™ êµ¬ë¬¸
+	if (isGameOver)
+		return;
+	
+	// ¹è°æ ½ºÅ©·Ñ ÀÌµ¿ ±¸¹®
 	if (bg1->getPositionY() >= visibleSize.height + (visibleSize.height / 2))
 		bg1->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
 	if (bg2->getPositionY() >= visibleSize.height + (visibleSize.height / 2))
 		bg2->setPosition(visibleSize.width / 2, -visibleSize.height / 2);
 
-	// ë²½ ì¶©ëŒ êµ¬ë¬¸
-	if (	(player->getPositionY() < visibleSize.height - player->getContentSize().height / 2) &&
+	// º® Ãæµ¹ ±¸¹®
+	if (
+		(player->getPositionY() < visibleSize.height - player->getContentSize().height / 2) &&
 		(player->getPositionX() > player->getContentSize().width / 2) &&
 		(player->getPositionY() > player->getContentSize().height / 2) &&
 		(player->getPositionX() < visibleSize.width - player->getContentSize().width / 2))
 	{
-		player->setPosition(player->getPosition() + (SPEED * userVec2 * dt));
+		player->setPosition(player->getPosition() + (SPEED * userVelocity * dt));
 	}
 	else
 	{
@@ -305,49 +343,29 @@ void HelloWorld::player_pro(float dt)
 	}
 }
 
+void HelloWorld::SafeDeletePointers()
+{
+	isGameOver = true;
+	bullets->clear();
+	Spe_bullets->clear();
+	player->removeFromParentAndCleanup(true);
+	bg2->removeFromParentAndCleanup(true);
+	bg1->removeFromParentAndCleanup(true);
+	timeLabel->removeFromParentAndCleanup(true);
+	m_joypad.release();
+}
+
 bool HelloWorld::onTouchBegan(Touch *touch, Event *event)
 {
-	if (isOnlyOneTouch == true)
-	{
-		isOnlyOneTouch = false;
-
-		pb = Sprite::create("UI/ParentButton.png");
-		pb->setScale(0.6f);
-		pb->setPosition(touch->getLocation());
-		this->addChild(pb, 1);
-	}
-	//cb = Sprite::create("UI/ChildButton.png");
-	//cb->setPosition(touch->getLocation());
-	//this->addChild(cb, 1);
-
+	m_joypad.DoTouchBegan(touch->getLocation());
 	return true;
 }
 void HelloWorld::onTouchMoved(Touch *touch, Event *event)
 {
-	// cbê°€ pbë°–ìœ¼ë¡œ ë‚˜ê°€ì§€ ì•Šê²Œ í•˜ëŠ” êµ¬ë¬¸
-	//if ((sqrtf(pow((touch->getLocation().x - pb->getPositionX()), 2) +
-	//	      pow((touch->getLocation().y - pb->getPositionY()), 2)) <= pb->getContentSize().width / 2))
-	//{
-	//	cb->setPosition(touch->getLocation());	
-	//}
-	userVec2.x = touch->getLocation().x - pb->getPositionX();
-	userVec2.y = touch->getLocation().y - pb->getPositionY();
-	userVec2 = getUnitVec2(userVec2);
-
+	m_joypad.DoTouchMoved(touch->getLocation(), userVelocity);
 }
 void HelloWorld::onTouchEnded(Touch *touch, Event *event)
 {
-	userVec2 = Vec2::ZERO;
-	isOnlyOneTouch = true;
-
-	this->removeChild(pb, true);
-	//this->removeChild(cb, true);
-}
-
-std::string HelloWorld::toString(float value)
-{
-	std::ostringstream convStream;
-	convStream << value;
-
-	return convStream.str();
+	userVelocity = Vec2::ZERO;
+	m_joypad.DoTouchEnded();
 }
