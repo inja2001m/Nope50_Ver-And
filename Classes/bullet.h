@@ -1,17 +1,26 @@
 #pragma once
+
+#include <random>
+
 #include "cocos2d.h"
-#define PI 3.141592
+#include "GameManager.h"
+
 USING_NS_CC;
 
 class Bullet : public cocos2d::Sprite
 {
 public:
-	Bullet();
-	virtual ~Bullet();
-	
 	static Bullet* create();
+
+private:
 	virtual bool init();
-	float direction;
+
 	void update(float dt);
-	int Speed;
+
+public:
+	void SetBulletDirection(Vec2 _direction) { this->m_Direction = _direction; }
+
+private:
+	Vec2 m_Direction;
+	int m_Speed;
 };

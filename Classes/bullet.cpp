@@ -1,17 +1,8 @@
 #include "bullet.h"
 
-Bullet::Bullet()
+Bullet * Bullet::create()
 {
-
-}
-Bullet::~Bullet()
-{
-
-}
-
-Bullet* Bullet::create()
-{
-	Bullet *pRet = new Bullet();
+	Bullet *pRet = new (std::nothrow)Bullet();
 	if (pRet && pRet->init())
 	{
 		pRet->autorelease();
@@ -25,7 +16,9 @@ Bullet* Bullet::create()
 bool Bullet::init()
 {
 	Sprite::initWithFile("OBJ/bullet.png");
-	Speed = rand() % 2 + 2;
+
+	m_Speed = RandomHelper::random_int(100, 200);
+
 	this->scheduleUpdate();
 
 	return true;
@@ -33,7 +26,8 @@ bool Bullet::init()
 
 void Bullet::update(float dt)
 {
-	this->setPosition(
-		getPosition().x + cosf(direction) * Speed,
-		getPosition().y + sinf(direction) * Speed);
+	if (GameManager::GetInstance()->m_IsGameOver)
+		this->unscheduleUpdate();
+
+	this->setPosition(this->getPosition() + m_Direction.getNormalized() * m_Speed * dt);
 }

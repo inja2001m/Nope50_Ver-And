@@ -1,17 +1,31 @@
 #pragma once
+
+#include <random>
+
 #include "cocos2d.h"
-#define PI 3.141592
+#include "GameManager.h"
+
 USING_NS_CC;
 
 class SpecialBullet : public cocos2d::Sprite
 {
 public:
-	SpecialBullet();
-	virtual ~SpecialBullet();
-
 	static SpecialBullet* create();
+
+private:
 	virtual bool init();
-	float direction;
 	void update(float dt);
-	int Speed;
+
+public:
+	void SetBulletDirection(Vec2 _direction) { this->m_Direction = _direction; }
+	void SetIsDirChangeEnabled(bool _isBool) { this->IsDirChangeEnabled = _isBool; }
+	bool GetIsDirChangeEnabled() { return this->IsDirChangeEnabled; }
+
+private:
+	Vec2 m_Direction;
+	int m_Speed;
+	float m_ChangeDirectionRate;
+
+	bool IsDirChangeEnabled;
+	float m_CurrentChangeDirectionTime;
 };

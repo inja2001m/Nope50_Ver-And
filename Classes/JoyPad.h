@@ -1,21 +1,17 @@
 #pragma once
 
 #include "cocos2d.h"
-#include "My_Defines.h"
 
-using namespace cocos2d;
+USING_NS_CC;
 
-class JoyPad
+class JoyPad : Layer
 {
 public:
-	JoyPad();
-	JoyPad(const JoyPad &other) = default;
-	~JoyPad() = default;
+	static JoyPad *create(const std::string _parentBtnFilename, const std::string _childBtnFilename, Layer *_gameLayer);
 
-	void release();
 
-public:
-	void Init(const std::string parentBtnFilename, const std::string childBtnFilename, Layer *gameLayer);
+private:
+	virtual bool init(const std::string _parentBtnFilename, const std::string _childBtnFilename, Layer *_gameLayer);
 
 public:
 	void DoTouchBegan(const Vec2 touchPos);
@@ -23,6 +19,6 @@ public:
 	void DoTouchEnded();
 
 private:
-	Sprite *m_parentBtn;
-	Sprite *m_childBtn;
+	Sprite *m_ParentBtn;
+	Sprite *m_ChildBtn;
 };

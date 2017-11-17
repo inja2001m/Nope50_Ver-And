@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "Menu.h"
+#include "MenuScene.h"
 
 USING_NS_CC;
 
@@ -47,5 +47,4 @@ void AppDelegate::applicationDidEnterBackground() {
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
-
 }

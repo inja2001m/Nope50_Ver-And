@@ -1,17 +1,8 @@
 #include "Special_bullet.h"
 
-SpecialBullet::SpecialBullet()
+SpecialBullet * SpecialBullet::create()
 {
-
-}
-SpecialBullet::~SpecialBullet()
-{
-
-}
-
-SpecialBullet* SpecialBullet::create()
-{
-	SpecialBullet *pRet = new SpecialBullet();
+	SpecialBullet *pRet = new (std::nothrow)SpecialBullet();
 	if (pRet && pRet->init())
 	{
 		pRet->autorelease();
@@ -25,7 +16,12 @@ SpecialBullet* SpecialBullet::create()
 bool SpecialBullet::init()
 {
 	Sprite::initWithFile("OBJ/SpecialBullet.png");
-	Speed = 3;
+
+	m_ChangeDirectionRate = RandomHelper::random_int(50, 200) * 0.01f;
+	m_Speed = RandomHelper::random_int(150, 300);
+	m_CurrentChangeDirectionTime = 0.0f;
+	IsDirChangeEnabled = false;
+
 	this->scheduleUpdate();
 
 	return true;
@@ -33,7 +29,15 @@ bool SpecialBullet::init()
 
 void SpecialBullet::update(float dt)
 {
-	this->setPosition(
-		getPosition().x + cosf(direction) * Speed,
-		getPosition().y + sinf(direction) * Speed);
+	if (GameManager::GetInstance()->m_IsGameOver)
+		this->unscheduleUpdate();
+
+	m_CurrentChangeDirectionTime += dt;
+	if (m_CurrentChangeDirectionTime >= m_ChangeDirectionRate)
+	{
+		IsDirChangeEnabled = true;
+		m_CurrentChangeDirectionTime -= m_ChangeDirectionRate;
+	}
+
+	this->setPosition(this->getPosition() + m_Direction.getNormalized() * m_Speed * dt);
 }
